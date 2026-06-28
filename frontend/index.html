@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="th">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>รายจ่ายครอบครัว</title>
+    <link rel="stylesheet" href="css/styles.css">
+  </head>
+  <body>
+    <main id="app" class="app-shell">
+      <section id="loginView" class="login-view">
+        <div class="brand-block">
+          <p class="eyebrow">Family Expense</p>
+          <h1>รายจ่ายครอบครัว</h1>
+          <p>บันทึกง่าย ดูยอดไว ใช้ได้บนมือถือ</p>
+        </div>
+
+        <form id="loginForm" class="login-card">
+          <label>
+            ผู้ใช้งาน
+            <select id="loginUser" required></select>
+          </label>
+          <label>
+            PIN
+            <input id="loginPin" type="password" inputmode="numeric" autocomplete="current-password" placeholder="กรอก PIN" required>
+          </label>
+          <button class="primary-btn" type="submit">เข้าสู่ระบบ</button>
+          <p id="loginError" class="form-error" role="alert"></p>
+        </form>
+      </section>
+
+      <section id="mainView" class="main-view hidden">
+        <header class="top-bar">
+          <div>
+            <p class="eyebrow">สวัสดี</p>
+            <h1 id="currentUserName">-</h1>
+          </div>
+          <button id="logoutBtn" class="ghost-btn" type="button">ออก</button>
+        </header>
+
+        <nav class="tab-bar" aria-label="เมนูหลัก">
+          <button class="tab-btn active" data-view="dashboard" type="button">ภาพรวม</button>
+          <button class="tab-btn admin-only" data-view="add" type="button">เพิ่ม</button>
+          <button class="tab-btn" data-view="list" type="button">รายการ</button>
+          <button class="tab-btn" data-view="summary" type="button">สรุป</button>
+          <button class="tab-btn admin-only" data-view="reports" type="button">รายงาน</button>
+        </nav>
+
+        <section id="dashboardPanel" class="panel active">
+          <div class="stat-grid">
+            <article class="stat-card">
+              <span>เดือนนี้</span>
+              <strong id="monthTotal">฿0</strong>
+            </article>
+            <article class="stat-card">
+              <span>วันนี้</span>
+              <strong id="todayTotal">฿0</strong>
+            </article>
+            <article class="stat-card">
+              <span>จำนวนรายการ</span>
+              <strong id="entryCount">0</strong>
+            </article>
+            <article class="stat-card">
+              <span>หมวดสูงสุด</span>
+              <strong id="topCategory">-</strong>
+            </article>
+          </div>
+          <div class="section-block">
+            <div class="section-title">
+              <h2>กราฟรายจ่ายตามหมวด</h2>
+              <button id="refreshBtn" class="ghost-btn" type="button">รีเฟรช</button>
+            </div>
+            <div id="categoryChart" class="bar-chart"></div>
+          </div>
+        </section>
+
+        <section id="addPanel" class="panel">
+          <form id="expenseForm" class="expense-form">
+            <input id="expenseId" type="hidden">
+            <label>
+              วันที่
+              <input id="expenseDate" type="date" required>
+            </label>
+            <label>
+              รายการ
+              <input id="expenseTitle" type="text" placeholder="เช่น อาหารเย็น" required>
+            </label>
+            <label>
+              หมวดหมู่
+              <select id="expenseCategory" required></select>
+            </label>
+            <label>
+              จำนวนเงิน
+              <input id="expenseAmount" type="number" min="0" step="0.01" inputmode="decimal" placeholder="0.00" required>
+            </label>
+            <label>
+              ผู้จ่าย
+              <select id="expensePayer" required></select>
+            </label>
+            <label>
+              วิธีชำระ
+              <select id="expensePayment" required></select>
+            </label>
+            <label>
+              หมายเหตุ
+              <textarea id="expenseNote" rows="3" placeholder="ไม่บังคับ"></textarea>
+            </label>
+            <label>
+              ลิงก์สลิปหรือใบเสร็จ
+              <input id="expenseReceipt" type="url" placeholder="https://...">
+            </label>
+            <button id="saveExpenseBtn" class="primary-btn sticky-save" type="submit">บันทึกรายจ่าย</button>
+            <button id="cancelEditBtn" class="ghost-btn hidden" type="button">ยกเลิกแก้ไข</button>
+            <p id="expenseMessage" class="form-message" role="status"></p>
+          </form>
+        </section>
+
+        <section id="listPanel" class="panel">
+          <div class="filters">
+            <input id="searchInput" type="search" placeholder="ค้นหารายการ">
+            <select id="filterCategory">
+              <option value="">ทุกหมวด</option>
+            </select>
+            <select id="sortInput">
+              <option value="dateDesc">ใหม่สุด</option>
+              <option value="dateAsc">เก่าสุด</option>
+              <option value="amountDesc">เงินมากสุด</option>
+              <option value="amountAsc">เงินน้อยสุด</option>
+            </select>
+          </div>
+          <div id="expenseList" class="expense-list"></div>
+        </section>
+
+        <section id="summaryPanel" class="panel">
+          <div class="summary-control">
+            <label>
+              เดือน
+              <input id="summaryMonth" type="month">
+            </label>
+          </div>
+          <div class="section-block">
+            <h2 id="summaryTotal">ยอดรวม ฿0</h2>
+            <div id="dailyChart" class="bar-chart compact"></div>
+          </div>
+          <div class="section-block">
+            <h2>ตามหมวดหมู่</h2>
+            <div id="summaryCategoryList" class="summary-list"></div>
+          </div>
+          <div class="section-block">
+            <h2>ตามผู้จ่าย</h2>
+            <div id="summaryPayerList" class="summary-list"></div>
+          </div>
+        </section>
+
+        <section id="reportsPanel" class="panel">
+          <div class="report-actions">
+            <button id="exportCsvBtn" class="primary-btn" type="button">Export Excel</button>
+            <button id="printPdfBtn" class="secondary-btn" type="button">Export PDF</button>
+          </div>
+          <p class="hint-text">Excel จะดาวน์โหลดเป็น CSV ส่วน PDF ใช้หน้าต่างพิมพ์ของเครื่อง</p>
+        </section>
+      </section>
+    </main>
+
+    <script src="js/config.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/app.js"></script>
+  </body>
+</html>
