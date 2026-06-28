@@ -1,0 +1,12 @@
+name = "family-expense-api"
+main = "src/index.js"
+compatibility_date = "2026-06-28"
+
+[vars]
+SPREADSHEET_ID = "PASTE_GOOGLE_SHEET_ID_HERE"
+GOOGLE_CLIENT_EMAIL = "service-account-name@project-id.iam.gserviceaccount.com"
+ALLOWED_ORIGIN = "https://YOUR_GITHUB_USERNAME.github.io"
+SETUP_SECRET = "change-this-long-random-text"
+
+# Set this as a secret, not a normal var:
+# npx wrangler secret put GOOGLE_PRIVATE_KEY
