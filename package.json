@@ -1,0 +1,16 @@
+{
+  "name": "family-expense-app",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "sync:apps-script": "node tools/sync-apps-script.mjs",
+    "write:config": "node tools/write-frontend-config.mjs",
+    "setup:worker": "node tools/setup-worker.mjs",
+    "verify:worker": "node tools/verify-worker.mjs",
+    "readiness": "node tools/check-readiness.mjs",
+    "hash:pin": "node tools/hash-pin.mjs",
+    "test": "node --test worker/test/*.test.js",
+    "check": "node --check frontend/js/api.js && node --check frontend/js/auth.js && node --check frontend/js/app.js && node --check worker/src/index.js && npm test"
+  }
+}
